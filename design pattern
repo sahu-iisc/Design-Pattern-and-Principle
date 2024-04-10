@@ -1,0 +1,350 @@
+:)Types of Design Pattern(GitHub - CatalinStefan/java-design-patterns)
+:)design-patterns-in-java-concepts-hands-on-projects
+In this video, the creator uses methodName(parameterName: parameterValue)
+
+
+https://thedeveloperstory.com/2021/08/02/5-superb-github-repos-that-every-java-developer-must-know-about/
+
+https://java-design-patterns.com/patterns/
+
+SOLID Design Principle
+Single Responsibility
+There should never be more than one reason for a class to change, which means focused, single functionality and addressing a specific concern.
+Open Closed 
+open for extension => Extend existing behavior.
+Closed for modification/change => source code remains unchanged.
+Provide an abstract method that the child class implements.
+Example HOF functions in Java.
+
+
+Liskov Substitution
+We should be able to substitute base class objects with child class objects, and this should not alter the behaviour/characteristics of the program.
+An anti-pattern that violates LSP occurs when a subclass changes the behavior of the superclass in such a way that the subclass cannot be used as a drop-in replacement for the superclass.
+
+
+Interface Segregation
+Clients should not be forced to depend upon interfaces they do not use.  In other words, a class should not be required to implement methods it doesn't need. Instead, it should be broken down into smaller, more specific interfaces more relevant to the client's needs.
+Dependency Inversion
+High-level modules should not depend on low-level modules. Both should depend on abstraction.
+Abstraction should be independent of details. Details should depend on abstractions.
+This means we should not have a class that depends directly on another class. Instead, we should rely on abstractions that multiple classes can implement, such as interfaces or abstract classes. This makes our code more flexible, reusable, and easier to maintain.
+An anti-pattern that violates DIP occurs when high-level modules depend directly on low-level modules, leading to a tightly coupled design where changes in the low-level module can directly affect the high-level module.
+Dependency Injection
+It involves passing dependencies to a class or object instead of having it create them internally. In other words, instead of creating its dependencies(tight coupling), the dependencies are provided to the class from an external source(loose coupling), typically a container or framework. 
+
+
+Creational
+deals with the creation process of objects and classes.
+Builder
+We remove the logic related to object construction from client code & abstract it in a separate class.
+Implementation considerations
+You can easily create an immutable class by implementing a builder as a static inner class. You’ll find this type of implementation used quite frequently, even if immutability is not a primary concern.
+Example of builder pattern
+java.util.Calendar.Builder
+Pitfalls
+The build method should provide suitable defaults or throw an exception if required properties are missing.
+To modify a mutable object, we still need to provide setter methods.
+
+
+Singleton
+A singleton class has only one instance and a single access point for a resource. Having a sizeable single instance is also an indication of bad design or implementation. We can’t use the new ClassName() if the constructor is private.
+Uses
+Network Manager
+Database Access
+Logging
+Utility Class
+How to implement
+Eager initialisation - create with class initialisation.
+Lazy initialisation - 
+Double checking - if multiple threads try to get the instance; in that case, multiple objects may get created because of the visibility issue. Volatile forces value read/write from main memory instead of cache. After synchronising the block, we also add a check if the value is not set.
+Static Initializer - As the Resource is initialized through a static initializer, there is no need for any extra synchronization. 
+Pitfalls 
+Singleton patterns can deceive you about the actual dependencies! Since they are globally accessible, it's easy to miss dependencies.
+The most common way to implement a singleton in Java is through static variables, held per class loader and not per JVM. So, they may not be genuinely Singleton in an OSGi or web application.
+
+
+Simple Factory
+Move the instantiation logic to a separate class and, most commonly, to a static method of this class.
+Implementation Considerations:
+It can be a method in an existing class. Adding a separate class allows other parts of your code to use simple factories more easily.
+It doesn’t need state tracking, so it’s best to keep this static.
+Comparison with a Factory method
+Simple factory
+We simply move our instantiation logic away from the client code, typically in a static method.
+It knows about all classes whose objects it can create. Otherwise it violated open/close principle.
+Factory method
+It is more useful when you want to delegate object creation to subclasses.
+We don’t know in advance about all product subclasses.
+The key difference is the level of abstraction and flexibility. The Simple Factory provides a single factory method or class for creating objects, while the Factory Method allows subclasses to define their factory methods, enabling more extensibility and customisation. Open for extension, Close for change.
+import java.util.Calendar.Builder - uses both builder and simple factory.
+
+
+Factory
+The factory method abstracts the object creation process and decouples the client code from the actual implementation of the objects created. The client code calls the factory method to obtain instances of objects without being aware of the specific class or implementation details.
+The Factory Method defines an abstract interface for creating objects but delegates the responsibility of instantiation to subclasses. Each subclass implements the factory method to create objects of a specific type. This pattern promotes loose coupling and creates different types of objects based on the particular needs of subclasses.
+We use this pattern when we do not know in advance which class may need to be instantiated beforehand & also to allow new classes to be added to the system and handle their creation without affecting client code. We would want to do this when you have a “product” inheritance hierarchy and the possibility of future additions.
+By overriding the factory method, we let the subclasses decide which object to instantiate.
+Implement a factory method
+We start by creating a class of our creator
+The creator can be concrete if it can provide a default object or be abstract.
+Implementation will override the method and return an object.
+Design Considerations
+The creator hierarchy in the factory method pattern reflects the product hierarchy. We typically end up with a concrete creator per object type.
+Comparison with Abstract Factory
+Intent: The Abstract Factory pattern creates families of related objects, while the Factory Method pattern creates variations of a single object.
+Structure: The Abstract Factory pattern involves multiple factory methods (each creating a different object type) within an abstract factory class/interface, with concrete factory classes providing implementations for those methods. In contrast, the Factory Method pattern involves a single factory method defined in an abstract base class, with concrete subclasses providing their implementations.
+Object Variation: The Abstract Factory pattern creates multiple types of related objects, while the Factory Method pattern creates variations of a single object type.
+Example - iterator in collection, EntityManagerFactory
+
+
+Prototype - Currently skipping this pattern, as it is suggested to avoid using the clone method.
+We have a complex object that is costly to create. We use an existing instance as our prototype to create more instances of such a class.
+Implementation considerations
+Immutable fields on clones save the trouble of deep copy.
+Make sure to reset the mutable state of the object before returning the prototype. Implementing this method to allow subclasses to initialise themselves is a good idea. We have to implement clone as a public method.
+Cloneable is the “marker” interface. 
+Problem with this design pattern:
+
+Abstract Factory
+It is used when we have two or more objects working together, forming a kit or set, and multiple sets or kits can be created by client code.
+It provides a way to access functionality without caring about implementation.
+One level of abstraction over the factory pattern. Separation of concerns
+Create an interface of the factory with a method signature showing what child factory class needs to be implemented to become part of this structure.
+Comparison with Factory Method
+Abstract Factory
+Hides factories as well as concrete objects used from the client code.
+Suitable when multiple objects are designed to work together, and clients must use products from a single family at a time.
+Factory method
+Hides the concrete objects that are used from the client code.
+Concerned with one product and its subclasses.
+Collaboration of the product itself with other objects is irrelevant.
+
+
+Structural
+Deals with how classes and objects are arranged or composed.
+Adapter
+Convert the interface of a class into another interface the client expects. It acts as a bridge between the two interfaces by encapsulating one interface and presenting a different interface to the client code.
+Convert data from one format to another.
+Implementation considerations:
+The work depends on the difference between the target interface and the adapted object. If method arguments are the same or similar adapter has significantly less work to do.
+An adapter allows you to override some of the adaptee’s behaviour. But this has to be avoided as you end up with an adapter that behaves differently from the adaptee(an object offering the same features but exposing a different interface).
+Most of the applications using third-party libraries use adapters as a middle layer between the application and the third-party library to decouple the application from the library. If another library has to be used only an adapter for the new library is required without having to change the application code.
+
+Bridge
+It aims to separate the interface (abstraction) and the implementation into separate hierarchies, bridging the gap. 
+In simple words we have a class which can have multiple implementations and those implementations use some algorithm which itself have multiple implementations.
+Convert from inheritance to composition. I.e. instead of creating classes for each combination separately develop them.
+Implementation Steps & Considerations
+We Start by defining our abstraction as needed by the client
+We determine common base operations and define them in abstraction.
+We can optionally also define a refined abstraction and provide more specialised operations.
+Then we define our Implementor next. Implementor methods do not have to match with abstractor. However, abstraction can carry out its work by using implementor methods.
+Then we provide one or more implementors providing an implementation.
+If we are ever going to have a single implementation, we can skip creating an abstract implementor.
+Abstraction can decide on its own which concrete implementor to use in its constructor, or we can delegate to a third class. Abstraction needs to be made aware of concrete implementors and provides greater de-coupling.
+
+Facade
+The client has to interact with many interfaces and classes in a subsystem to get results. So, the client gets tightly coupled with those interfaces and classes. The facade is NOT just a one-to-one method forwarding to other classes.
+Provides a simple interface to complex functionality. Using the facade, our client is not tightly coupled with the implementations..
+Remove the need for complex object/memory management.
+Implement Steps & Considerations
+We start by creating a class serving as a facade 
+Determine the overall “use cases”/tasks the subsystem uses.
+Write a method that exposes each “use case” or task.
+This method takes care of working with different classes of subsystems.
+A facade should minimise the complexity of subsystems and provide usable interfaces.
+We can have an interface or abstract class for the facade, and the client can use different subclasses to talk to different subsystem implementations.
+Example - Service layer which combines multiple dao operations into a single method.
+
+Decorator/Wrapper
+Attach new behaviour to an object without altering existing code.
+Overriding certain behaviours. Need not override all the behaviour.
+Implementation
+We Start with our component
+The component defines the interface needed or already used by the client.
+The concrete component implements the interface.
+We define our decorator. The decorator implements the component and also references the concrete component.
+We provide additional methods on top of that provided by concrete component instances.
+Decorators can be abstract as well & depend on subclasses to provide functionality.
+Decorator supports recursive composition, so this pattern lends itself to creating many small objects that add “just a little bit” functionality. Code using these objects becomes challenging to debug.
+Example - inputStream and outputStream, synchronizedList .
+
+
+Composite
+Compose objects into a tree structure. That means multiple objects create or make up one whole object in those situations.
+Works when the core functionality can be represented as a tree.
+Manipulate many objects as a single one.
+
+
+Proxy
+A proxy acts on behalf of the object and is used for many reasons. Some of the main reasons are
+Protection proxy - Control access to the original object’s operation.
+Remote proxy - provides a local representation of a remote object.
+Lazy Initialisation - delays consideration of original object until necessary.
+Count reference to an object.
+Implement a proxy
+We start by implementing a proxy
+The proxy must implement the same interface as the real object.
+We can create an object later or ask for one in the constructor.
+In method implementation of the proxy, we implement the proxy’s functionality before delegating to the real object.
+How to provide the client with proxies instances is decided by the application. We can provide a factory or compose a client with proxies instances.
+Implementation Considerations
+Pay attention to the performance cost of proxies and synchronisation issues added by the proxy itself.
+Design consideration
+Proxies typically do not need to know about the actual concrete implementation of a real object.
+With Java, you can use a dynamic proxy to create proxies for any object at runtime.
+For example - hibernate uses this for lazy loading, and spring uses it to support features like transactions, caching and general AOP support. Also used in scope beans. EntityManager and PersistanceContext.
+Pitfalls
+Java’s dynamic proxy only works if your class implements one or more interfaces. Proxy is created by implementing these interfaces.
+If you need proxies for handling multiple responsibilities, then having a single proxy is better for handling all these requirements.
+Provide some functionality before and/or after calling an object.
+Similar to the decorator, except the proxy manages the lifecycle of its object. The decorator always needs a real object, but the proxy doesn’t.
+
+
+FlyWeight
+Our system needs many objects of a particular class, and maintaining these instances is a performance concern.
+Flyweight allows us to share an object in multiple contexts. But instead of sharing the entire object, which may not be feasible, we divide the object state into two parts: intrinsic(a state shared in every context) and extrinsic (context-specific). We create objects with only intrinsic states and share them in multiple contexts.
+The client or user of objects provides the extrinsic state to the object to carry out its functionality.
+We provide a factory so clients can get required flyweight objects based on some keys to identifying flyweight.
+Implement a flyweight
+We identify our object's “intrinsic” and “extrinsic” states.
+We create an interface for flyweight to provide standard methods that accept extrinsic states.
+In the implementation of shared flyweight, we add intrinsic state and also implement methods.
+We ignore the extrinsic state argument in unshared flyweight implementation, as all states are within the object.
+Next, we implement the flyweight factory, which caches flyweights and provides a method to get them.
+Implementation Considerations:
+A factory is necessary with a flyweight design pattern as client code needs an easy way to get hold of a shared flyweight. Also, the number of shared instances can be large, so a central place is a good strategy for keeping track of them.
+The flyweight’s intrinsic state should be immutable for successfully using the flyweight pattern.
+
+
+Data Transfer Object
+Pass data with multiple attributes in one shot from client to server, to avoid multiple calls to remote server.
+The main reason for the usage of DTO is to batch up what would be multiple remote calls into a single one.
+DTOs are often used in combination with data access objects (DAO) to retrieve complex data from a database and pass this data to a client in one network round trip.
+A typical DTO does not have any behavior except for storage, retrieval, serialization and deserialization of its own data (accessors and mutators).
+Example - we have customer and order class(one to many). We can fetch all the customers and their order by call findAll method of JpaRepository in our service. But if I’m interested in particular fields of customer and orders. For this we have two ways to solve using DTO:
+Fetch all data the customer(it will have all the orders that too), using stream create the object of customDTO and add to the list.
+Fetch only specific data using custom type queries using inner joins such that it match our custom DTO.
+If you're using JPA and Hibernate, you might want to leverage its JOIN FETCH feature to eagerly load the customer's orders when you load the customers. This can help prevent the "N+1 selects problem", where you end up doing one database query to fetch the customers, and then N more queries to fetch each customer's orders.
+
+Behavioral
+Describe how classes and objects interact & communicate with each other i.e. pass info to each other.
+Observer
+Notify multiple objects simultaneously whenever an object changes state or a particular event or method is called(directly dependent on the object).  We’re defining one-to-many dependency between objects, where many objects listen for the state change of a single object without tightly coupling all of them together.
+Instead of sending each change notification to the observer, we can send a notification once all the changes are done(bulk changes).
+An object should be able to notify other objects without making assumptions about who these objects are.
+Observers may be flooded with updates, leading to performance issues.
+Is this synchronous or asynchronous?
+Example - servlet listener, rabbitmq, notify method of object class. 
+
+
+Publisher Subscriber(One To Many)
+It is a messaging pattern where senders of messages, called publishers, do not program the messages to be sent directly to specific receivers, known as subscribers. Instead, the messages are categorized into classes without knowledge of which subscribers (if any) there may be.
+Subscribers subscribe to the message queue. That is, all subscribers receive the same message.
+Here are the main components of the Pub-Sub Design Pattern:
+Publisher: This is the entity or service in the application that generates new data.
+Subscriber: This is the entity or service that receives the data or message from the publisher. It subscribes to a specific topic and receives updates whenever there's new data on that topic.
+Message Queue/Topic(event bus): This is the medium through which the publisher sends messages and the subscriber receives messages. The publisher sends messages to a topic or a message queue, and all subscribers to that topic or queue receive those messages.
+Message Broker: This is an optional component that can manage the message delivery to the subscribers. It can control and maintain the topics or queues to which the subscribers are subscribed and deliver the messages accordingly.
+The Pub-Sub pattern allows for asynchronous processing, as the publisher can publish messages without waiting for the subscribers to receive them.
+The Pub-Sub pattern does not provide any guarantee that subscribers will receive all messages, which might be problematic in some cases.
+
+
+Producer Consumer
+Each message the producer produces will be consumed by a single consumer. This is a mechanism to distribute the workload to multiple consumers.
+Example - WorkStealing using Deque.
+
+
+Chain of responsibility
+Define a chain of handlers to process a request when we want to decouple the sender of a request from the object that handles the request.
+Each handler contains a reference to the next handler.
+Each handler decides to process the request AND/OR pass it on.
+Requests can be of different types(using enum-like classes).
+Implement
+We start by defining the handler interface class
+The handler must define a method to accept incoming classes.
+A handler can define a method to access a successor in a chain.
+Next, we implement a handler in one or more concrete handlers. Concrete handlers should check if they can handle the request. If not, then it should pass the request to the next handler.
+We have to create our chain of objects next. We can do it in the client. Typically in the real world, this job will be done by some framework or initialisation code written by you.
+Example - servlet filter, password check(check for different things at every step).
+
+Command
+A request is wrapped in an object that contains all requested info.
+The command object is passed to the correct handler.
+Implement
+We start by writing the command interface
+It must define a method that executes the command.
+We next implement this interface in class for each request or operation type we want to implement. The command should also allow for undo operation if your systems need it.
+Each concrete command knows exactly which operation it needs. All it needs is parameters for the operation, if required, and the receiver instance of which the operation is invoked.
+The client creates the command instance and sets up the receiver and all required parameters.
+Implementation consideration
+You can support “undo” and “redo” in your commands. This makes them useful for systems with complex interactions like workflow engineers.
+If your command is simple, i.e. if it doesn’t have to undo feature, doesn’t have any state and simply hides a particular function and its arguments, then you can reuse the same command object for the same type of operation.
+For commands that will be queued for long durations, pay attention to the size of the state maintained by them.
+Example - Runnable interface
+Decoupling
+Efficiency, ordering, priority etc.
+
+
+Strategy
+Use a different algorithm at run time without changing the client code.
+We provide implementations for various algorithms by implementing a strategy interface a class per algorithm.
+Our context class provides a way to configure it with one of the strategy implementations. Client code will create context with one of the strategy objects. Context class is where we will call the strategy method.
+Implementation considerations
+We can implement our context in a way where the strategy object is optional. This makes context usable for client codes who do not want to deal with concrete strategy objects, and we don’t want to expose all the implementations to the client. We can add default implementation in our context. We need to provide the mechanism to change the strategy.
+It is helpful when adding functionality without changing the program structure.
+The client must understand the differences between the strategies to choose the appropriate one.
+The decision to use a context class or not depends on the complexity of the application and whether the added layer provides any benefit.
+Example - Comparator
+
+
+Template method
+We define an algorithm in a method as a series of steps and provide a chance for subclasses to define or redefine some of these steps.
+It's called a template method because it represents a template for an algorithm. Subclasses can override some parts, but the overall structure remains the same. This pattern is less flexible as it relies on inheritance and the behavior is set at compile time.
+
+
+Implementation considerations
+A balance must be kept in how granular we want to keep our steps. Too many steps mean too many methods to override for subclass where each one may be a primitive operation. Too few steps would mean subclasses end up defining the significant parts of the algorithm.
+If needed, the template method can be made final to prevent subclasses from changing the base algorithm.
+
+The Template Method uses inheritance and relies on a base class to provide an outline of an algorithm, while the Strategy Pattern uses composition by having the context object contain a reference to a strategy object. Strategy allows more flexibility.
+Example - JDBCTemplate
+
+
+State
+An object changes its behavior based on its internal state. This pattern allows to define the state-specific behaviors in separate classes.
+At any moment, a finite number of states a program can be in.
+States can be encapsulated in an object.
+Implementation consideration
+In some implementations, clients themselves can configure context with the initial state.
+Design considerations
+Using a flyweight pattern, we can share states with no instance variables and only encapsulate behavior specific to that state.
+Pitfalls
+State transitions can be tricky to implement. This becomes more complicated if there are multiple possible states to which an object can transition from the current state. And if states are responsible for triggering transitions, we have much more coupling between states.	
+We may not realise all the possible states we need at the beginning of our design. As our design evolves, we may need to add more states to handle a particular behavior.
+
+
+Visitor
+Mediator
+Provide a central object used for communicating between objects. Due to this encapsulation, there is a loose coupling between the interacting objects.
+Objects don't talk to each other. Typically an object explicitly knows about other objects to which it wants to interact, i.e. to call a method. In the mediator pattern, this interaction is within the mediator object and interacting objects only know about the mediator object.
+Reduce dependencies between objects. The benefit of this arrangement is that the interaction can now change without needing modifications to participating objects. Changing the mediator allows adding/removing participants in an interaction.
+Implement 
+We start by defining a mediator
+Mediators define a generic method called by other objects.
+This method typically needs to know which object changed and, optionally, the exact property which has changed in that object.
+We implement this method to notify the rest of the objects about the state change.
+The mediator must know about all participants in the collaboration it is mediating. To solve this, we can either have objects registered with a mediator, or the mediator itself can be the creator of these objects.
+Implementation considerations
+It’s essential to identify which object has sent change notifications to avoid sending that object the changed value again.
+If an object method takes a very long time to process the change, it can affect the overall performance of the mediator severely. This is a common problem in any notification system, so pay attention to synchronisation in mediator methods.
+Design considerations
+We can use an observer design pattern to implement the notification mechanism through which objects notify the mediator.
+The mediator is tightly coupled with the objects we’re using it for, so it is very difficult to implement a reusable mediator.
+Memento
+Save and restore the previous state without revealing internal details about the state then, we can use a memento design pattern. 
+3 components
+Memento - store state
+Originator - create the state
+Caretaker - decides to save or restore the state
+Null object
